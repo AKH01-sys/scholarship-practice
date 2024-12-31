@@ -1,1 +1,1 @@
-# scholarship-practice
+# static website for memorizing stuff in mathematics
