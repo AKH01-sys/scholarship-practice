@@ -7,28 +7,31 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: #f7f7f7;
-  color: #333;
+  background: #F7F7F7; /* Light Grey Background */
+  color: #333333; /* Dark Grey Text */
   padding: 10px;
 }
 
 .container {
   max-width: 500px;
   margin: auto;
-  background: #fff;
+  background: #FFFFFF; /* White Container for Contrast */
   padding: 20px;
   border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle Shadow for Depth */
 }
 
 /* Headings and text */
 h1, h2 {
   text-align: center;
   margin-bottom: 1em;
+  color: #4A90E2; /* Primary Blue for Headings */
 }
 
 p {
   margin: 0.5em 0;
   text-align: center;
+  color: #333333;
 }
 
 /* Unified Buttons */
@@ -41,34 +44,42 @@ p {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background: #6c63ff;
-  color: #fff;
+  background: #4A90E2; /* Primary Blue */
+  color: #FFFFFF; /* White Text */
   text-align: center;
+  transition: background 0.3s ease; /* Smooth Hover Transition */
 }
 
-.menu-btn:hover, .start-btn:hover, .nav-btn:hover {
-  background: #5a52d1;
+.menu-btn:hover, .start-btn:hover, .nav-btn:hover, #sc-submit-btn:hover, #uc-submit-btn:hover {
+  background: #357ABD; /* Darker Blue on Hover */
 }
 
-/* Stats button with different color */
+/* Stats button with Secondary Color */
 .stats-btn {
-  background: #ff6363;
+  background: #50E3C2; /* Teal */
 }
+
 .stats-btn:hover {
-  background: #d15353;
+  background: #3CB89A; /* Darker Teal on Hover */
 }
 
-/* "Back" and "Back to Main Menu" button style */
-.nav-btn {
-  background: #6c63ff; /* Same as other buttons */
-  color: #fff;
+/* Success and Error Feedback */
+.feedback {
+  margin-top: 10px;
+  text-align: center;
+  font-style: italic;
+  min-height: 1.2em; /* Maintain Space for Feedback */
 }
 
-.nav-btn:hover {
-  background: #5a52d1;
+.feedback.correct {
+  color: #7ED321; /* Green for Correct Answers */
 }
 
-/* Form/option group */
+.feedback.incorrect {
+  color: #D0021B; /* Red for Incorrect Answers */
+}
+
+/* Form/Option Group */
 .option-group {
   margin: 20px 0;
   display: flex;
@@ -78,32 +89,53 @@ p {
 
 .option-group label, .option-group select {
   margin: 5px 0;
+  font-size: 1em;
+  color: #333333;
 }
 
-/* Quiz area */
+/* Quiz and Result Areas */
 .quiz-area, .result-area {
   margin-top: 20px;
 }
 
+/* Hide elements when not in use */
 .hidden {
   display: none;
 }
 
+/* Question Text Styling */
 .question-text {
   font-weight: bold;
   text-align: center;
   margin-bottom: 10px;
+  color: #4A90E2; /* Primary Blue for Questions */
 }
 
+/* Input Fields */
 #sc-answer, #uc-answer {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   font-size: 1em;
+  border: 1px solid #CCCCCC; /* Light Grey Border */
+  border-radius: 5px;
 }
 
-.feedback {
-  margin-top: 10px;
-  text-align: center;
-  font-style: italic;
+/* Back and Back to Main Menu Buttons */
+.nav-btn {
+  background: #4A90E2; /* Same as Primary Buttons */
+  color: #FFFFFF;
+}
+
+.nav-btn:hover {
+  background: #357ABD;
+}
+
+/* Optional: Specific Styles for Clear Stats Button */
+.nav-btn[onclick="clearStats()"] {
+  background: #D0021B; /* Red for Clear Action */
+}
+
+.nav-btn[onclick="clearStats()"]:hover {
+  background: #A30012; /* Darker Red on Hover */
 }
