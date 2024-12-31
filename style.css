@@ -157,17 +157,17 @@ p {
 .prime-select-btn.selected {
   background: #2F5597;    /* Primary color when selected */
   color: #fff;            /* White text for contrast */
-  border-color: #2F5597;
+  border-color: #2F5597;  /* Match border to background */
 }
 
-/* Red border for incorrectly chosen prime, or non-prime chosen by user */
+/* Highlight Incorrect Selections */
 .prime-incorrect {
-  border-color: #E74C3C !important; /* Force red border */
+  border-color: #E74C3C !important; /* Red border for incorrect selections */
 }
 
-/* Green border for missed prime (user didn't select a prime) */
+/* Highlight Missed Primes */
 .prime-missed {
-  border-color: #27AE60 !important; /* Force green border */
+  border-color: #27AE60 !important; /* Green border for missed primes */
 }
 
 /* Prime Numbers Container */
