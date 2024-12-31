@@ -1,29 +1,35 @@
 /**************************************************
- * GLOBAL: Log practice stats in localStorage
+ * 1) GLOBAL: Log and Manage Practice Stats
  **************************************************/
 function logPractice(option, detail, scoreInfo) {
   const statsKey = 'practiceStats';
   let stats = JSON.parse(localStorage.getItem(statsKey)) || [];
 
-  // Create a record with date, option, detail, and score
+  // For date filters, we store a 'timestamp' in ISO format
+  const now = new Date();
   const record = {
-    date: new Date().toLocaleString(),
-    option: option,
-    detail: detail,
-    score: scoreInfo
+    displayDate: now.toLocaleString(), // For user display
+    timestamp: now.toISOString(),      // For date-based filtering
+    option: option,                    // e.g. "Squares & Cubes" or "Unit Conversions"
+    detail: detail,                    // e.g. "Time: 1 min", "Count: 5", etc.
+    score: scoreInfo                   // e.g. "Score: 3/5"
   };
-  
-  // Add to the beginning
+
+  // Insert at the beginning
   stats.unshift(record);
 
-  // Only keep the last 5 records
-  if (stats.length > 5) stats = stats.slice(0, 5);
+  // Keep last 50 or so if you want a limit (example):
+  // if (stats.length > 50) stats.pop();
 
   localStorage.setItem(statsKey, JSON.stringify(stats));
 }
 
+function confirmClearStats() {
+  return confirm("Are you sure you want to clear all stats? This cannot be undone.");
+}
+
 /**************************************************
- * SQUARES & CUBES
+ * 2) SQUARES & CUBES QUIZ LOGIC
  **************************************************/
 if (document.getElementById('sc-start-btn')) {
   const startBtn = document.getElementById('sc-start-btn');
@@ -38,7 +44,7 @@ if (document.getElementById('sc-start-btn')) {
   const startOptions = document.getElementById('sc-start-options');
 
   let timer = null;
-  let timeMode = '1';
+  let timeMode = '1';  // default
   let questions = [];
   let currentQIndex = 0;
   let correctCount = 0;
@@ -67,20 +73,24 @@ if (document.getElementById('sc-start-btn')) {
   }
 
   function startQuiz() {
-    // Disable the Start button to prevent multiple clicks
+    // Hide or disable start button & dropdown so it can’t be reused
     startBtn.disabled = true;
-    
+    startOptions.classList.add('hidden'); // Hides the entire start options group
+
     timeMode = timeSelect.value;
     questions = generateQuestionsAll();
     currentQIndex = 0;
     correctCount = 0;
     quizCompleted = false;
+
     feedbackEl.textContent = '';
+    feedbackEl.classList.remove('correct', 'incorrect');
+
     quizArea.classList.remove('hidden');
     resultArea.classList.add('hidden');
 
     if (timeMode !== 'all') {
-      const timeLimit = parseInt(timeMode, 10) * 60; 
+      const timeLimit = parseInt(timeMode, 10) * 60;
       let countdown = timeLimit;
       timer = setInterval(() => {
         countdown--;
@@ -103,22 +113,22 @@ if (document.getElementById('sc-start-btn')) {
   }
 
   function checkAnswer() {
-    if (quizCompleted) return; // Prevent further submissions after completion
-    
+    if (quizCompleted) return;
+
     const userAns = answerInput.value.trim();
     const correctAns = questions[currentQIndex].answer;
-    
+
     if (userAns === correctAns) {
       correctCount++;
       feedbackEl.textContent = 'Correct!';
       feedbackEl.classList.remove('incorrect');
       feedbackEl.classList.add('correct');
     } else {
-      feedbackEl.textContent = `Incorrect! Correct answer was ${correctAns}.`;
+      feedbackEl.textContent = `Incorrect! The correct answer was ${correctAns}.`;
       feedbackEl.classList.remove('correct');
       feedbackEl.classList.add('incorrect');
     }
-    
+
     currentQIndex++;
     if (timeMode === 'all') {
       if (currentQIndex < questions.length) {
@@ -127,13 +137,12 @@ if (document.getElementById('sc-start-btn')) {
         endQuiz();
       }
     } else {
-      // In timed mode, continue until time is up
-      showQuestion();
+      showQuestion(); // timed mode continues until time is up
     }
   }
 
   function endQuiz() {
-    if (quizCompleted) return; 
+    if (quizCompleted) return;
     quizCompleted = true;
 
     if (timer) {
@@ -144,9 +153,9 @@ if (document.getElementById('sc-start-btn')) {
     resultArea.classList.remove('hidden');
     summaryEl.textContent = `You answered ${correctCount} questions correctly out of ${currentQIndex}.`;
 
-    // Log the attempt
-    const scoreInfo = `Score: ${correctCount}/${currentQIndex}`;
-    logPractice('Squares & Cubes', `Time Mode: ${timeMode}`, scoreInfo);
+    // Log the result
+    const score = `Score: ${correctCount}/${currentQIndex}`;
+    logPractice('Squares & Cubes', `Time Mode: ${timeMode}`, score);
   }
 
   startBtn.addEventListener('click', startQuiz);
@@ -154,7 +163,7 @@ if (document.getElementById('sc-start-btn')) {
 }
 
 /**************************************************
- * UNIT CONVERSIONS
+ * 3) UNIT CONVERSIONS QUIZ LOGIC
  **************************************************/
 if (document.getElementById('uc-start-btn')) {
   const startBtn = document.getElementById('uc-start-btn');
@@ -166,6 +175,7 @@ if (document.getElementById('uc-start-btn')) {
   const feedbackEl = document.getElementById('uc-feedback');
   const resultArea = document.getElementById('uc-result-area');
   const summaryEl = document.getElementById('uc-summary');
+  const startOptions = document.getElementById('uc-start-options');
 
   const units = ["kilo", "hecto", "deca", "unit", "deci", "centi", "mili"];
 
@@ -176,15 +186,18 @@ if (document.getElementById('uc-start-btn')) {
   let quizCompleted = false;
 
   function startQuiz() {
-    // Disable the Start button to prevent multiple clicks
+    // Hide or disable to prevent multiple starts
     startBtn.disabled = true;
+    startOptions.classList.add('hidden');
 
     totalQuestions = parseInt(questionCountSelect.value, 10);
     questions = generateConversionQuestions(totalQuestions);
     currentQIndex = 0;
     correctCount = 0;
     quizCompleted = false;
+
     feedbackEl.textContent = '';
+    feedbackEl.classList.remove('correct', 'incorrect');
 
     quizArea.classList.remove('hidden');
     resultArea.classList.add('hidden');
@@ -203,30 +216,30 @@ if (document.getElementById('uc-start-btn')) {
   function generateOneConversion() {
     const fromIndex = Math.floor(Math.random() * units.length);
     const toIndex = Math.floor(Math.random() * units.length);
-    if (fromIndex === toIndex) {
-      return generateOneConversion();
-    }
+    if (fromIndex === toIndex) return generateOneConversion();
 
-    const isDecimal = Math.random() < 0.5;
-    let combinedValue;
+    // 50% chance for decimal vs whole
+    const isDecimal = (Math.random() < 0.5);
+    let baseValue;
     if (!isDecimal) {
-      combinedValue = Math.floor(Math.random() * 9999) + 1; 
+      baseValue = Math.floor(Math.random() * 9999) + 1; // up to 4 digits
     } else {
-      combinedValue = generateDecimalWith3to4Digits();
+      baseValue = generateDecimalWith3to4Digits();
     }
 
     const indexDiff = toIndex - fromIndex;
     const factor = Math.pow(10, indexDiff);
-    const preciseResult = (combinedValue * factor).toFixed(5);
-    const correctAnsNum = parseFloat(preciseResult);
+    const precise = (baseValue * factor).toFixed(5);
+    const correctAnsNum = parseFloat(precise);
 
     return {
-      question: `Convert ${combinedValue} ${units[fromIndex]} to ${units[toIndex]}.`,
+      question: `Convert ${baseValue} ${units[fromIndex]} to ${units[toIndex]}.`,
       answer: correctAnsNum
     };
   }
 
   function generateDecimalWith3to4Digits() {
+    // e.g. total 3 or 4 numeric digits
     const totalDigits = Math.random() < 0.5 ? 3 : 4;
     let integerDigits, fractionDigits;
 
@@ -263,7 +276,7 @@ if (document.getElementById('uc-start-btn')) {
       endQuiz();
       return;
     }
-    const qObj = questions[currentQIndex];
+    let qObj = questions[currentQIndex];
     questionEl.textContent = qObj.question;
     answerInput.value = '';
   }
@@ -274,6 +287,7 @@ if (document.getElementById('uc-start-btn')) {
     const userAns = parseFloat(answerInput.value.trim());
     const correctAns = questions[currentQIndex].answer;
     const tolerance = 0.000001;
+
     if (Math.abs(userAns - correctAns) < tolerance) {
       correctCount++;
       feedbackEl.textContent = 'Correct!';
@@ -297,7 +311,7 @@ if (document.getElementById('uc-start-btn')) {
     summaryEl.textContent = `You answered ${correctCount} out of ${questions.length} correctly.`;
 
     const scoreInfo = `Score: ${correctCount}/${questions.length}`;
-    logPractice('Unit Conversions', `Number of Questions: ${totalQuestions}`, scoreInfo);
+    logPractice('Unit Conversions', `Count: ${totalQuestions}`, scoreInfo);
   }
 
   function formatAnswer(num) {
@@ -310,39 +324,90 @@ if (document.getElementById('uc-start-btn')) {
 }
 
 /**************************************************
- * PRACTICE STATS
+ * 4) PRACTICE STATS PAGE (with Filters + Confirmation)
  **************************************************/
 if (document.getElementById('stats-logs')) {
   const statsLogsDiv = document.getElementById('stats-logs');
+  const filterSelect = document.getElementById('stats-filter');
 
   function loadStats() {
     const statsKey = 'practiceStats';
     let stats = JSON.parse(localStorage.getItem(statsKey)) || [];
-    
-    if (stats.length === 0) {
-      statsLogsDiv.innerHTML = "<p>No practice records found.</p>";
+
+    const filter = filterSelect.value;
+    let filteredStats = applyFilter(stats, filter);
+
+    if (filteredStats.length === 0) {
+      statsLogsDiv.innerHTML = "<p>No practice records found for this filter.</p>";
       return;
     }
-    
+
     let htmlStr = "<ul>";
-    stats.forEach(record => {
-      const dateStr = record.date || "Unknown date";
-      const detailStr = record.detail || "";
-      const scoreStr = record.score ? ` (${record.score})` : "";
+    filteredStats.forEach(record => {
+      const dateToShow = record.displayDate || "Unknown date";
+      const detail = record.detail || "";
+      const score = record.score ? ` (${record.score})` : "";
       htmlStr += `<li>
-        <strong>${dateStr}</strong><br/>
-        Practice: ${record.option}${scoreStr}<br/>
-        Detail: ${detailStr}
+        <strong>${dateToShow}</strong><br/>
+        Practice: ${record.option}${score}<br/>
+        Detail: ${detail}
       </li>`;
     });
     htmlStr += "</ul>";
     statsLogsDiv.innerHTML = htmlStr;
   }
 
+  function applyFilter(stats, filter) {
+    if (filter === 'last5') {
+      // newest 5
+      return stats.slice(0, 5);
+    }
+    if (filter === 'all') {
+      return stats;
+    }
+
+    // For date-based filters, need 'timestamp'
+    const now = new Date();
+    return stats.filter(record => {
+      if (!record.timestamp) {
+        // old logs without timestamps won't be included in date-based filters
+        return false;
+      }
+      const recordDate = new Date(record.timestamp);
+
+      if (filter === 'today') {
+        return isSameDay(recordDate, now);
+      }
+      if (filter === 'yesterday') {
+        let yest = new Date(now);
+        yest.setDate(now.getDate() - 1);
+        return isSameDay(recordDate, yest);
+      }
+      if (filter === 'last30') {
+        let diffDays = (now - recordDate) / (1000 * 60 * 60 * 24);
+        return diffDays <= 30;
+      }
+      return false;
+    });
+  }
+
+  function isSameDay(d1, d2) {
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()
+    );
+  }
+
   window.clearStats = function() {
+    if (!confirmClearStats()) return;
     localStorage.removeItem('practiceStats');
     loadStats();
   };
 
+  // Listen to filter changes
+  filterSelect.addEventListener('change', loadStats);
+
+  // On page load
   loadStats();
 }
