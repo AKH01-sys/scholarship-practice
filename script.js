@@ -5,7 +5,7 @@ function logPractice(option, detail, scoreInfo) {
   const statsKey = 'practiceStats';
   let stats = JSON.parse(localStorage.getItem(statsKey)) || [];
 
-  // Keep a simple date string
+  // Create a record with date, option, detail, and score
   const record = {
     date: new Date().toLocaleString(),
     option: option,
@@ -13,10 +13,10 @@ function logPractice(option, detail, scoreInfo) {
     score: scoreInfo
   };
   
-  // Add to beginning
+  // Add to the beginning
   stats.unshift(record);
 
-  // Only keep last 5
+  // Only keep the last 5 records
   if (stats.length > 5) stats = stats.slice(0, 5);
 
   localStorage.setItem(statsKey, JSON.stringify(stats));
@@ -35,6 +35,7 @@ if (document.getElementById('sc-start-btn')) {
   const feedbackEl = document.getElementById('sc-feedback');
   const resultArea = document.getElementById('sc-result-area');
   const summaryEl = document.getElementById('sc-summary');
+  const startOptions = document.getElementById('sc-start-options');
 
   let timer = null;
   let timeMode = '1';
@@ -66,8 +67,8 @@ if (document.getElementById('sc-start-btn')) {
   }
 
   function startQuiz() {
-    // Disable the Start button after click
-    startBtn.disabled = true; 
+    // Disable the Start button to prevent multiple clicks
+    startBtn.disabled = true;
     
     timeMode = timeSelect.value;
     questions = generateQuestionsAll();
@@ -102,7 +103,7 @@ if (document.getElementById('sc-start-btn')) {
   }
 
   function checkAnswer() {
-    if (quizCompleted) return; // ignore extra submissions
+    if (quizCompleted) return; // Prevent further submissions after completion
     
     const userAns = answerInput.value.trim();
     const correctAns = questions[currentQIndex].answer;
@@ -124,7 +125,7 @@ if (document.getElementById('sc-start-btn')) {
         endQuiz();
       }
     } else {
-      // timed mode, keep asking until time is up
+      // In timed mode, continue until time is up
       showQuestion();
     }
   }
@@ -163,6 +164,7 @@ if (document.getElementById('uc-start-btn')) {
   const feedbackEl = document.getElementById('uc-feedback');
   const resultArea = document.getElementById('uc-result-area');
   const summaryEl = document.getElementById('uc-summary');
+  const startOptions = document.getElementById('uc-start-options');
 
   const units = ["kilo", "hecto", "deca", "unit", "deci", "centi", "mili"];
 
@@ -173,8 +175,8 @@ if (document.getElementById('uc-start-btn')) {
   let quizCompleted = false;
 
   function startQuiz() {
-    // Disable the Start button after click
-    startBtn.disabled = true; 
+    // Disable the Start button to prevent multiple clicks
+    startBtn.disabled = true;
 
     totalQuestions = parseInt(questionCountSelect.value, 10);
     questions = generateConversionQuestions(totalQuestions);
@@ -292,7 +294,7 @@ if (document.getElementById('uc-start-btn')) {
     summaryEl.textContent = `You answered ${correctCount} out of ${questions.length} correctly.`;
 
     const scoreInfo = `Score: ${correctCount}/${questions.length}`;
-    logPractice('Unit Conversions', `Count: ${totalQuestions}`, scoreInfo);
+    logPractice('Unit Conversions', `Number of Questions: ${totalQuestions}`, scoreInfo);
   }
 
   function formatAnswer(num) {
