@@ -374,7 +374,7 @@ if (document.getElementById('prime-start-btn')) {
 
     // Get selected time mode
     const selected = timeSelect.value;
-    timeMode = (selected === 'all') ? 'all' : selected; // '1','3','5','all'
+    timeMode = selected; // '1','3','5'
 
     // Reset counters and flags
     currentSetIndex = 0;
@@ -388,11 +388,17 @@ if (document.getElementById('prime-start-btn')) {
     quizArea.classList.remove('hidden');
     resultArea.classList.add('hidden');
 
-    // If timed mode, start the timer
-    if (timeMode !== 'all') {
+    // Start the timer based on selected time mode
+    if (timeMode !== 'all') { // 'all' is no longer an option, but keeping the condition just in case
       let timeLeft = parseInt(timeMode, 10) * 60; // Convert minutes to seconds
       timer = setInterval(() => {
         timeLeft--;
+        // Optional: Display remaining time to the user
+        // You can add an element in your HTML to show the timer
+        // For example:
+        // const timerEl = document.getElementById('prime-timer');
+        // if (timerEl) timerEl.textContent = `Time Left: ${Math.floor(timeLeft / 60)}:${('0' + (timeLeft % 60)).slice(-2)}`;
+        
         if (timeLeft <= 0) {
           endQuiz();
         }
@@ -511,7 +517,7 @@ if (document.getElementById('prime-start-btn')) {
 
     // Log the practice session
     const scoreInfo = `Score: ${correctSets}/${totalSetsAttempted} sets`;
-    logPractice('Prime Numbers', `Time Mode: ${timeMode}`, scoreInfo);
+    logPractice('Prime Numbers', `Time Mode: ${timeMode} minute(s)`, scoreInfo);
   }
 
   // Event Listeners
