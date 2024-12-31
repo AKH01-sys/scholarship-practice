@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prime Numbers - Scholarship Practice</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- "Back" button at the top -->
+    <button class="nav-btn" onclick="history.back()">← Back</button>
+
+    <h1>Prime Numbers Practice</h1>
+
+    <!-- Time Selection -->
+    <div id="prime-start-options">
+      <div class="option-group">
+        <label for="prime-time-select">Practice Time:</label>
+        <select id="prime-time-select">
+          <option value="1">1 minute</option>
+          <option value="3">3 minutes</option>
+          <option value="5">5 minutes</option>
+          <option value="all">Practice All (no time limit)</option>
+        </select>
+      </div>
+      <button id="prime-start-btn" class="start-btn">Start</button>
+    </div>
+
+    <!-- Quiz Area: Sets of 6 ascending numbers -->
+    <div id="prime-quiz-area" class="quiz-area hidden">
+      <p id="prime-set-count"></p> <!-- “Set # of #” -->
+      <div id="prime-numbers" class="prime-numbers-container"></div>
+      <button id="prime-submit-btn" class="start-btn">Submit</button>
+      <div id="prime-feedback" class="feedback"></div>
+    </div>
+
+    <!-- Result Display -->
+    <div id="prime-result-area" class="result-area hidden">
+      <h2>Results</h2>
+      <p id="prime-summary"></p>
+      <button class="nav-btn" onclick="location.href='index.html'">
+        Back to Main Menu
+      </button>
+    </div>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
