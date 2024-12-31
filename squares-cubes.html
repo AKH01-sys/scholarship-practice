@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Squares &amp; Cubes</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div class="container">
 
-    <!-- Back button at the top for accessibility -->
-    <button class="back-btn" onclick="history.back()">← Back</button>
+    <!-- Back button (styled same as other buttons) -->
+    <button class="nav-btn" onclick="history.back()">← Back</button>
 
     <h1>Squares &amp; Cubes Practice</h1>
     
@@ -39,7 +39,10 @@
     <div id="sc-result-area" class="result-area hidden">
       <h2>Results</h2>
       <p id="sc-summary"></p>
-      <button onclick="location.href='index.html'">Back to Main Menu</button>
+      <!-- Back to Main Menu button, same style -->
+      <button class="nav-btn" onclick="location.href='index.html'">
+        Back to Main Menu
+      </button>
     </div>
   </div>
 
