@@ -475,8 +475,10 @@ if (document.getElementById('prime-start-btn')) {
       feedbackEl.classList.add('incorrect');
     }
 
-    // Move on to next set
-    loadNextSet();
+    // Wait for 1 second before loading the next set to allow users to see feedback
+    setTimeout(() => {
+      loadNextSet();
+    }, 1000); // 1000 milliseconds = 1 second
   }
 
   function endQuiz() {
