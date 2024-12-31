@@ -7,35 +7,34 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: #F7F7F7; /* Light Grey Background */
-  color: #333333; /* Dark Grey Text */
+  background: #F9F9F9; /* Light neutral background for readability */
+  color: #333333; /* Dark neutral text for high contrast */
   padding: 10px;
 }
 
 .container {
   max-width: 500px;
   margin: auto;
-  background: #FFFFFF; /* White Container for Contrast */
+  background: #FFFFFF;
   padding: 20px;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle Shadow for Depth */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow for depth */
 }
 
-/* Headings and text */
+/* Headings */
 h1, h2 {
   text-align: center;
   margin-bottom: 1em;
-  color: #4A90E2; /* Primary Blue for Headings */
+  color: #2F5597; /* Primary Deep Blue for headings */
 }
 
 p {
   margin: 0.5em 0;
   text-align: center;
-  color: #333333;
 }
 
 /* Unified Buttons */
-.menu-btn, .start-btn, #sc-submit-btn, #uc-submit-btn, .nav-btn {
+.menu-btn, .start-btn, .nav-btn, #sc-submit-btn, #uc-submit-btn {
   display: block;
   width: 100%;
   margin: 10px 0;
@@ -44,42 +43,27 @@ p {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background: #4A90E2; /* Primary Blue */
-  color: #FFFFFF; /* White Text */
+  color: #FFFFFF; /* White text */
   text-align: center;
-  transition: background 0.3s ease; /* Smooth Hover Transition */
+  transition: background 0.3s ease;
+  background: #2F5597; /* Primary color for main buttons */
 }
 
-.menu-btn:hover, .start-btn:hover, .nav-btn:hover, #sc-submit-btn:hover, #uc-submit-btn:hover {
-  background: #357ABD; /* Darker Blue on Hover */
+.menu-btn:hover, .start-btn:hover, .nav-btn:hover, 
+#sc-submit-btn:hover, #uc-submit-btn:hover {
+  background: #1F3B6E; /* Darker Blue on hover */
 }
 
-/* Stats button with Secondary Color */
+/* Stats button with Secondary Color (Teal) */
 .stats-btn {
-  background: #50E3C2; /* Teal */
+  background: #16A085; 
 }
 
 .stats-btn:hover {
-  background: #3CB89A; /* Darker Teal on Hover */
+  background: #127566;
 }
 
-/* Success and Error Feedback */
-.feedback {
-  margin-top: 10px;
-  text-align: center;
-  font-style: italic;
-  min-height: 1.2em; /* Maintain Space for Feedback */
-}
-
-.feedback.correct {
-  color: #7ED321; /* Green for Correct Answers */
-}
-
-.feedback.incorrect {
-  color: #D0021B; /* Red for Incorrect Answers */
-}
-
-/* Form/Option Group */
+/* Option-group styling */
 .option-group {
   margin: 20px 0;
   display: flex;
@@ -89,53 +73,52 @@ p {
 
 .option-group label, .option-group select {
   margin: 5px 0;
-  font-size: 1em;
   color: #333333;
+  font-size: 1em;
 }
 
-/* Quiz and Result Areas */
+/* Quiz and Result areas */
 .quiz-area, .result-area {
   margin-top: 20px;
 }
 
-/* Hide elements when not in use */
 .hidden {
   display: none;
 }
 
-/* Question Text Styling */
 .question-text {
   font-weight: bold;
   text-align: center;
   margin-bottom: 10px;
-  color: #4A90E2; /* Primary Blue for Questions */
+  color: #2F5597; /* Emphasize questions in the primary color */
 }
 
-/* Input Fields */
+/* Feedback messages */
+.feedback {
+  margin-top: 10px;
+  text-align: center;
+  font-style: italic;
+  min-height: 1.2em; /* So layout doesn't jump when message changes */
+}
+
+.feedback.correct {
+  color: #27AE60; /* Green for correctness */
+}
+
+.feedback.incorrect {
+  color: #E74C3C; /* Red for mistakes */
+}
+
+/* Input fields */
 #sc-answer, #uc-answer {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   font-size: 1em;
-  border: 1px solid #CCCCCC; /* Light Grey Border */
+  border: 1px solid #CCCCCC;
   border-radius: 5px;
 }
 
-/* Back and Back to Main Menu Buttons */
-.nav-btn {
-  background: #4A90E2; /* Same as Primary Buttons */
-  color: #FFFFFF;
-}
-
-.nav-btn:hover {
-  background: #357ABD;
-}
-
-/* Optional: Specific Styles for Clear Stats Button */
-.nav-btn[onclick="clearStats()"] {
-  background: #D0021B; /* Red for Clear Action */
-}
-
-.nav-btn[onclick="clearStats()"]:hover {
-  background: #A30012; /* Darker Red on Hover */
-}
+/* Extra note: If you want accent color (#F39C12) for special highlights, 
+   you can apply it selectively (e.g., .accent-btn { background: #F39C12; } ).
+ */
