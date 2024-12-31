@@ -53,7 +53,7 @@ p {
   cursor: pointer;
   color: #FFFFFF; /* White text */
   text-align: center;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
   background: #2F5597; /* Primary color for main buttons */
 }
 
@@ -127,7 +127,7 @@ p {
   color: #E74C3C; /* Red for mistakes */
 }
 
-/* Input fields */
+/* Input fields (Squares & Cubes, Conversions) */
 #sc-answer, #uc-answer {
   width: 100%;
   padding: 10px;
@@ -146,8 +146,8 @@ p {
   padding: 10px;
   font-size: 1em;
   border-radius: 5px;
-  transition: background 0.3s ease, color 0.3s ease;
   width: 30%; /* Adjust width as needed */
+  transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
 }
 
 .prime-select-btn:hover {
@@ -157,7 +157,17 @@ p {
 .prime-select-btn.selected {
   background: #2F5597;    /* Primary color when selected */
   color: #fff;            /* White text for contrast */
-  border-color: #2F5597;  /* Match border to background */
+  border-color: #2F5597;
+}
+
+/* Red border for incorrectly chosen prime, or non-prime chosen by user */
+.prime-incorrect {
+  border-color: #E74C3C !important; /* Force red border */
+}
+
+/* Green border for missed prime (user didn't select a prime) */
+.prime-missed {
+  border-color: #27AE60 !important; /* Force green border */
 }
 
 /* Prime Numbers Container */
