@@ -390,10 +390,10 @@ if (document.getElementById('prime-start-btn')) {
 
     // If timed mode, start the timer
     if (timeMode !== 'all') {
-      const timeLimit = parseInt(timeMode, 10) * 60; // minutes to seconds
+      let timeLeft = parseInt(timeMode, 10) * 60; // Convert minutes to seconds
       timer = setInterval(() => {
-        timeLimit--;
-        if (timeLimit <= 0) {
+        timeLeft--;
+        if (timeLeft <= 0) {
           endQuiz();
         }
       }, 1000);
@@ -518,6 +518,7 @@ if (document.getElementById('prime-start-btn')) {
   startBtn.addEventListener('click', startQuiz);
   submitBtn.addEventListener('click', checkSet);
 }
+
 /**************************************************
  * 4) PRACTICE STATS PAGE 
  **************************************************/
