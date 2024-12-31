@@ -8,19 +8,24 @@
 </head>
 <body>
   <div class="container">
+
+    <!-- Back button -->
+    <button class="back-btn" onclick="history.back()">← Back</button>
+
     <h1>Unit Conversions Practice</h1>
     
-    <div class="option-group">
-      <label for="uc-question-count">Number of Questions:</label>
-      <select id="uc-question-count">
-        <option value="3">3</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-      </select>
+    <div id="uc-start-options">
+      <div class="option-group">
+        <label for="uc-question-count">Number of Questions:</label>
+        <select id="uc-question-count">
+          <option value="3">3</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+        </select>
+      </div>
+      <button id="uc-start-btn" class="start-btn">Start</button>
     </div>
-    
-    <button id="uc-start-btn" class="start-btn">Start</button>
     
     <!-- Quiz Area -->
     <div id="uc-quiz-area" class="quiz-area hidden">
