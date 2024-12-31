@@ -8,8 +8,25 @@
 </head>
 <body>
   <div class="container">
+
+    <button class="back-btn" onclick="history.back()">← Back</button>
+
     <h1>Recent Practice Stats</h1>
+
+    <!-- Simple filter for date range -->
+    <div class="option-group">
+      <label for="stats-filter">Filter:</label>
+      <select id="stats-filter">
+        <option value="last5">Last 5</option>
+        <option value="all">All</option>
+        <option value="today">Today</option>
+        <option value="yesterday">Yesterday</option>
+        <option value="last30">Last 30 Days</option>
+      </select>
+    </div>
+
     <div id="stats-logs"></div>
+
     <button onclick="clearStats()">Clear Stats</button>
     <button onclick="location.href='index.html'">Back to Main Menu</button>
   </div>
