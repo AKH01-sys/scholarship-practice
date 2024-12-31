@@ -334,15 +334,12 @@ if (document.getElementById('prime-start-btn')) {
   const summaryEl = document.getElementById('prime-summary');
   const startOptions = document.getElementById('prime-start-options');
 
-  let timeMode = '1';
   let timer = null;
   let quizCompleted = false;
-
+  let timeMode = '1'; 
   let currentSetIndex = 0;
   let totalSetsAttempted = 0;
   let correctSets = 0;
-
-  // ---------- Utility Functions ----------
 
   function isPrime(num) {
     if (num < 2) return false;
@@ -352,47 +349,42 @@ if (document.getElementById('prime-start-btn')) {
     return true;
   }
 
-  // Generate one set of 6 ascending unique numbers from 1..100
-  // with at least one prime
   function generateSetOfSix() {
-    let arr = [];
+    const arr = [];
     while (arr.length < 6) {
-      let r = Math.floor(Math.random() * 100) + 1; // 1..100
+      const r = Math.floor(Math.random() * 100) + 1; // 1..100
       if (!arr.includes(r)) {
         arr.push(r);
       }
     }
-    arr.sort((a,b) => a - b);
-    const hasPrime = arr.some(n => isPrime(n));
-    if (!hasPrime) {
-      return generateSetOfSix();
+    arr.sort((a, b) => a - b);
+    if (!arr.some(n => isPrime(n))) {
+      return generateSetOfSix(); // ensure at least 1 prime
     }
     return arr;
   }
 
-  // ---------- Core Quiz Flow ----------
-
   function startQuiz() {
-    // Hide start UI
+    // Hide start options
     startBtn.disabled = true;
     startOptions.classList.add('hidden');
 
-    let selected = timeSelect.value;
-    timeMode = (selected === 'all') ? 'all' : selected; // '1', '3', '5', or 'all'
-
+    const selected = timeSelect.value;
+    timeMode = (selected === 'all') ? 'all' : selected; // '1','3','5','all'
+    quizCompleted = false;
     currentSetIndex = 0;
     totalSetsAttempted = 0;
     correctSets = 0;
-    quizCompleted = false;
     feedbackEl.textContent = '';
     feedbackEl.classList.remove('correct', 'incorrect');
 
+    // Show quiz area
     quizArea.classList.remove('hidden');
     resultArea.classList.add('hidden');
 
-    // If timed
+    // If timed mode
     if (timeMode !== 'all') {
-      const timeLimit = parseInt(timeMode, 10) * 60; 
+      const timeLimit = parseInt(timeMode, 10) * 60;
       let countdown = timeLimit;
       timer = setInterval(() => {
         countdown--;
@@ -408,24 +400,21 @@ if (document.getElementById('prime-start-btn')) {
   function loadNextSet() {
     if (quizCompleted) return;
 
-    // Clear out the old
     numbersContainer.innerHTML = '';
     feedbackEl.textContent = '';
     feedbackEl.classList.remove('correct', 'incorrect');
 
-    // Generate 6 ascending numbers
-    const setOf6 = generateSetOfSix();
+    const setArr = generateSetOfSix();
     currentSetIndex++;
-    setCountEl.textContent = `Set #${currentSetIndex}`;
     totalSetsAttempted++;
+    setCountEl.textContent = `Set #${currentSetIndex}`;
 
-    // Create clickable buttons
-    setOf6.forEach(num => {
+    // Create 6 buttons
+    setArr.forEach(num => {
       const btn = document.createElement('button');
       btn.classList.add('prime-select-btn');
       btn.textContent = num;
-      btn.dataset.selected = 'false'; // track user selection
-      // Toggle selection on click
+      btn.dataset.selected = 'false';
       btn.addEventListener('click', () => {
         if (btn.dataset.selected === 'false') {
           btn.dataset.selected = 'true';
@@ -442,43 +431,43 @@ if (document.getElementById('prime-start-btn')) {
   function checkSet() {
     if (quizCompleted) return;
 
-    const buttons = document.querySelectorAll('.prime-select-btn');
+    const btns = document.querySelectorAll('.prime-select-btn');
     let allCorrect = true;
 
-    // 1) Evaluate all user selections
-    buttons.forEach(btn => {
+    // Evaluate user’s choices
+    btns.forEach(btn => {
       const num = parseInt(btn.textContent, 10);
       const userSelected = (btn.dataset.selected === 'true');
-      const actuallyPrime = isPrime(num);
+      const isP = isPrime(num);
 
-      // If user selected a non-prime => highlight red border
-      if (userSelected && !actuallyPrime) {
+      // If user selected a non-prime => highlight with red
+      if (userSelected && !isP) {
         btn.classList.add('prime-incorrect');
         allCorrect = false;
       }
-      // If user did NOT select a prime => highlight green border
-      if (!userSelected && actuallyPrime) {
+      // If user missed a prime => highlight with green
+      if (!userSelected && isP) {
         btn.classList.add('prime-missed');
         allCorrect = false;
       }
     });
 
-    // 2) Show text feedback
+    // Show feedback
     if (allCorrect) {
       correctSets++;
       feedbackEl.textContent = 'Correct!';
       feedbackEl.classList.remove('incorrect');
       feedbackEl.classList.add('correct');
     } else {
-      feedbackEl.textContent = 'Incorrect! Check highlights.';
+      feedbackEl.textContent = 'Incorrect! Check the highlights.';
       feedbackEl.classList.remove('correct');
       feedbackEl.classList.add('incorrect');
     }
 
-    // 3) Wait 2 seconds, then move on
+    // Wait 2 seconds so user can see highlights, then load next set
     setTimeout(() => {
-      // Remove highlights to avoid carrying over
-      buttons.forEach(btn => {
+      // Remove highlight classes
+      btns.forEach(btn => {
         btn.classList.remove('prime-incorrect', 'prime-missed');
       });
       loadNextSet();
@@ -489,30 +478,27 @@ if (document.getElementById('prime-start-btn')) {
     if (quizCompleted) return;
     quizCompleted = true;
 
-    // Stop timer if any
     if (timer) {
       clearInterval(timer);
       timer = null;
     }
-
     quizArea.classList.add('hidden');
     resultArea.classList.remove('hidden');
 
-    summaryEl.textContent = `You got ${correctSets} correct sets out of ${totalSetsAttempted} attempts.`;
+    const summary = `You got ${correctSets} correct sets out of ${totalSetsAttempted}.`;
+    summaryEl.textContent = summary;
 
-    // Log practice
     const scoreInfo = `Score: ${correctSets}/${totalSetsAttempted} sets`;
     logPractice('Prime Numbers', `Time Mode: ${timeMode}`, scoreInfo);
   }
 
-  // ---------- Event Listeners ----------
-
+  // Event Listeners
   startBtn.addEventListener('click', startQuiz);
   submitBtn.addEventListener('click', checkSet);
 }
 
 /**************************************************
- * 4) PRACTICE STATS PAGE (with Filters + Confirmation)
+ * 4) PRACTICE STATS PAGE 
  **************************************************/
 if (document.getElementById('stats-logs')) {
   const statsLogsDiv = document.getElementById('stats-logs');
