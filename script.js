@@ -167,11 +167,8 @@ if (document.getElementById('uc-start-btn')) {
   const resultArea = document.getElementById('uc-result-area');
   const summaryEl = document.getElementById('uc-summary');
 
-  // Possible units array in order
+  // Possible units in order
   const units = ["kilo", "hecto", "deca", "unit", "deci", "centi", "mili"];
-  // For convenience, let's define how each step changes the value by factor of 10
-  // kilo -> hecto -> deca -> unit -> deci -> centi -> mili
-  // indices differ by 1 => factor of 10
   // index difference of n => factor of 10^n
 
   let questions = [];
@@ -179,6 +176,9 @@ if (document.getElementById('uc-start-btn')) {
   let correctCount = 0;
   let totalQuestions = 3;
 
+  /**
+   * Start Quiz
+   */
   function startQuiz() {
     totalQuestions = parseInt(questionCountSelect.value, 10);
     logPractice('Unit Conversions', `Count: ${totalQuestions}`);
@@ -194,7 +194,9 @@ if (document.getElementById('uc-start-btn')) {
     showQuestion();
   }
 
-  // Generate some random conversion questions
+  /**
+   * Generate an array of random conversion questions
+   */
   function generateConversionQuestions(count) {
     let qs = [];
     for (let i = 0; i < count; i++) {
@@ -203,38 +205,108 @@ if (document.getElementById('uc-start-btn')) {
     return qs;
   }
 
+  /**
+   * Generate one random conversion question
+   * - If whole number: 1..9999 (up to 4 digits)
+   * - If decimal: total digits (integer + fractional) = 3..4
+   *   e.g. 999.9 (4 digits total), 9.99 (3 digits total), etc.
+   */
   function generateOneConversion() {
     const fromIndex = Math.floor(Math.random() * units.length);
     const toIndex = Math.floor(Math.random() * units.length);
-    // We want them to be different
+    // If fromIndex === toIndex, regenerate
     if (fromIndex === toIndex) {
-      return generateOneConversion(); 
+      return generateOneConversion();
     }
-    // Let's pick a random number up to 4 digits + up to 3 decimals
-    const wholePart = Math.floor(Math.random() * 9999) + 1; // 1..9999
-    const decimalPart = Math.floor(Math.random() * 1000); // 0..999
-    let combinedValue;
-    if (decimalPart === 0) {
-      combinedValue = wholePart; // no decimal
+
+    // Decide if we want a whole number or a decimal
+    const isDecimal = Math.random() < 0.5;  // 50% chance
+    
+    let combinedValue = 0;
+    if (!isDecimal) {
+      // Whole number up to 4 digits
+      combinedValue = Math.floor(Math.random() * 9999) + 1; // 1..9999
     } else {
-      // format up to 3 decimals
-      combinedValue = parseFloat(wholePart + '.' + decimalPart);
+      // Decimal with total digit length of 3 or 4
+      combinedValue = generateDecimalWith3to4Digits();
     }
 
-    // difference in indices => factor of 10^(difference)
-    const indexDiff = toIndex - fromIndex; 
-    // if indexDiff = 1 => factor 10
-    // if indexDiff = -2 => factor 0.01, etc.
-
+    // Calculate the factor for conversion
+    const indexDiff = toIndex - fromIndex;
+    // 10^(indexDiff)
     const factor = Math.pow(10, indexDiff);
-    const correctAns = combinedValue * factor;
+
+    // Multiply and round the result to avoid floating point artifacts
+    // We'll store up to 5 decimal places to keep it precise enough.
+    const preciseResult = (combinedValue * factor).toFixed(5);
+    // Then parse as float to strip trailing zeros
+    const correctAnsNum = parseFloat(preciseResult);
 
     return {
       question: `Convert ${combinedValue} ${units[fromIndex]} to ${units[toIndex]}.`,
-      answer: correctAns.toString()
+      // Store as a float so we can do a tolerance check
+      answer: correctAnsNum
     };
   }
 
+  /**
+   * Generate a random decimal with total length 3 or 4 digits (integer + fractional).
+   * Examples:
+   *  - 9.99  (3 digits total: '9', '.', '9', '9' => 3 numeric digits)
+   *  - 99.9  (3 numeric digits if we count only digits, 4 if counting the dot)
+   *  - 1.23  (3 numeric digits)
+   *  - 999.9 (4 numeric digits)
+   * This function picks random patterns to keep it simple.
+   */
+  function generateDecimalWith3to4Digits() {
+    // We'll pick either 3 or 4 total digits (integer + fraction).
+    // Then we randomize how they get distributed.
+    const totalDigits = Math.random() < 0.5 ? 3 : 4; // 50% chance for 3 or 4 numeric digits
+    // We ensure at least 1 digit before decimal and at least 1 digit after decimal
+
+    // For example, if totalDigits=3: possible combos for integer+fraction -> (1+2), (2+1)
+    // If totalDigits=4: possible combos -> (1+3), (2+2), (3+1)
+    
+    let integerDigits, fractionDigits;
+    
+    if (totalDigits === 3) {
+      // random pick either 1+2 or 2+1
+      if (Math.random() < 0.5) {
+        integerDigits = 1; fractionDigits = 2;
+      } else {
+        integerDigits = 2; fractionDigits = 1;
+      }
+    } else { // totalDigits === 4
+      const rand = Math.random();
+      if (rand < 0.33) {
+        integerDigits = 1; fractionDigits = 3;
+      } else if (rand < 0.66) {
+        integerDigits = 2; fractionDigits = 2;
+      } else {
+        integerDigits = 3; fractionDigits = 1;
+      }
+    }
+
+    // Generate the integer part: ensure it doesn't start with 0
+    const intMin = Math.pow(10, integerDigits - 1);   // e.g., if integerDigits=2 => intMin=10
+    const intMax = Math.pow(10, integerDigits) - 1;   // e.g., if integerDigits=2 => intMax=99
+    const intPart = Math.floor(Math.random() * (intMax - intMin + 1)) + intMin;
+
+    // Generate the fractional part
+    // e.g., if fractionDigits=2 => 0..99 => format with 2 digits
+    const fracMax = Math.pow(10, fractionDigits) - 1;
+    const fracPartInt = Math.floor(Math.random() * (fracMax + 1));
+    // zero-pad if needed
+    const fracPartStr = fracPartInt.toString().padStart(fractionDigits, '0');
+
+    // Combine
+    const finalStr = `${intPart}.${fracPartStr}`;
+    return parseFloat(finalStr); // e.g. "12.34" => 12.34
+  }
+
+  /**
+   * Show question
+   */
   function showQuestion() {
     if (currentQIndex >= questions.length) {
       endQuiz();
@@ -245,30 +317,55 @@ if (document.getElementById('uc-start-btn')) {
     answerInput.value = '';
   }
 
+  /**
+   * Check the user's answer against the correct answer
+   * - We'll allow a small tolerance to account for potential rounding.
+   */
   function checkAnswer() {
     let userAns = parseFloat(answerInput.value.trim());
-    let correctAns = parseFloat(questions[currentQIndex].answer);
+    let correctAns = questions[currentQIndex].answer;
 
-    // A little tolerance for floating point rounding could be considered,
-    // but here we will require exact matches for simplicity.
-    if (userAns === correctAns) {
+    // Tolerance for floating point comparison
+    const tolerance = 0.000001;
+    if (Math.abs(userAns - correctAns) < tolerance) {
       correctCount++;
       feedbackEl.textContent = 'Correct!';
       feedbackEl.style.color = 'green';
     } else {
-      feedbackEl.textContent = `Incorrect! Correct answer was ${correctAns}.`;
+      // Format the correct answer to at most 5 decimal places
+      // or remove trailing zeros if it's effectively an integer.
+      let correctAnsStr = formatAnswer(correctAns);
+      
+      feedbackEl.textContent = `Incorrect! Correct answer was ${correctAnsStr}.`;
       feedbackEl.style.color = 'red';
     }
+
     currentQIndex++;
     showQuestion();
   }
 
+  /**
+   * End the quiz
+   */
   function endQuiz() {
     quizArea.classList.add('hidden');
     resultArea.classList.remove('hidden');
     summaryEl.textContent = `You answered ${correctCount} out of ${questions.length} correctly.`;
   }
 
+  /**
+   * Utility: format numeric answers neatly (avoid 10.00000, etc.)
+   */
+  function formatAnswer(num) {
+    // Try to see if it's effectively an integer
+    if (Number.isInteger(num)) {
+      return num.toString();
+    }
+    // Otherwise, show up to 5 decimals, then trim trailing zeros
+    return parseFloat(num.toFixed(5)).toString();
+  }
+
+  // Event listeners
   startBtn.addEventListener('click', startQuiz);
   submitBtn.addEventListener('click', checkAnswer);
 }
