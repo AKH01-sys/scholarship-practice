@@ -1,5 +1,5 @@
 /**************************************************
- * 1) GLOBAL: Log and Manage Practice Stats
+ * GLOBAL: Log and Manage Practice Stats
  **************************************************/
 function logPractice(option, detail, scoreInfo) {
   const statsKey = 'practiceStats';
@@ -10,7 +10,7 @@ function logPractice(option, detail, scoreInfo) {
   const record = {
     displayDate: now.toLocaleString(), // For user display
     timestamp: now.toISOString(),      // For date-based filtering
-    option: option,                    // e.g. "Squares & Cubes" or "Unit Conversions"
+    option: option,                    // e.g. "Squares & Cubes" or "Unit Conversions" or "Prime Numbers"
     detail: detail,                    // e.g. "Time: 1 min", "Count: 5", etc.
     score: scoreInfo                   // e.g. "Score: 3/5"
   };
@@ -18,8 +18,8 @@ function logPractice(option, detail, scoreInfo) {
   // Insert at the beginning
   stats.unshift(record);
 
-  // Keep last 50 or so if you want a limit (example):
-  // if (stats.length > 50) stats.pop();
+  // Keep last 50 records if desired
+  if (stats.length > 50) stats = stats.slice(0, 50);
 
   localStorage.setItem(statsKey, JSON.stringify(stats));
 }
@@ -29,7 +29,7 @@ function confirmClearStats() {
 }
 
 /**************************************************
- * 2) SQUARES & CUBES QUIZ LOGIC
+ * 1) SQUARES & CUBES QUIZ LOGIC
  **************************************************/
 if (document.getElementById('sc-start-btn')) {
   const startBtn = document.getElementById('sc-start-btn');
@@ -73,16 +73,14 @@ if (document.getElementById('sc-start-btn')) {
   }
 
   function startQuiz() {
-    // Hide or disable start button & dropdown so it can’t be reused
+    // Disable the Start button to prevent multiple clicks
     startBtn.disabled = true;
-    startOptions.classList.add('hidden'); // Hides the entire start options group
-
+    
     timeMode = timeSelect.value;
     questions = generateQuestionsAll();
     currentQIndex = 0;
     correctCount = 0;
     quizCompleted = false;
-
     feedbackEl.textContent = '';
     feedbackEl.classList.remove('correct', 'incorrect');
 
@@ -90,7 +88,7 @@ if (document.getElementById('sc-start-btn')) {
     resultArea.classList.add('hidden');
 
     if (timeMode !== 'all') {
-      const timeLimit = parseInt(timeMode, 10) * 60;
+      const timeLimit = parseInt(timeMode, 10) * 60; 
       let countdown = timeLimit;
       timer = setInterval(() => {
         countdown--;
@@ -114,7 +112,7 @@ if (document.getElementById('sc-start-btn')) {
 
   function checkAnswer() {
     if (quizCompleted) return;
-
+    
     const userAns = answerInput.value.trim();
     const correctAns = questions[currentQIndex].answer;
 
@@ -163,7 +161,7 @@ if (document.getElementById('sc-start-btn')) {
 }
 
 /**************************************************
- * 3) UNIT CONVERSIONS QUIZ LOGIC
+ * 2) UNIT CONVERSIONS QUIZ LOGIC
  **************************************************/
 if (document.getElementById('uc-start-btn')) {
   const startBtn = document.getElementById('uc-start-btn');
@@ -186,16 +184,15 @@ if (document.getElementById('uc-start-btn')) {
   let quizCompleted = false;
 
   function startQuiz() {
-    // Hide or disable to prevent multiple starts
+    // Disable the Start button to prevent multiple clicks
     startBtn.disabled = true;
-    startOptions.classList.add('hidden');
+    startOptions.classList.add('hidden'); // Hides the entire start options group
 
     totalQuestions = parseInt(questionCountSelect.value, 10);
     questions = generateConversionQuestions(totalQuestions);
     currentQIndex = 0;
     correctCount = 0;
     quizCompleted = false;
-
     feedbackEl.textContent = '';
     feedbackEl.classList.remove('correct', 'incorrect');
 
@@ -218,22 +215,21 @@ if (document.getElementById('uc-start-btn')) {
     const toIndex = Math.floor(Math.random() * units.length);
     if (fromIndex === toIndex) return generateOneConversion();
 
-    // 50% chance for decimal vs whole
-    const isDecimal = (Math.random() < 0.5);
-    let baseValue;
+    const isDecimal = Math.random() < 0.5;
+    let combinedValue;
     if (!isDecimal) {
-      baseValue = Math.floor(Math.random() * 9999) + 1; // up to 4 digits
+      combinedValue = Math.floor(Math.random() * 9999) + 1; 
     } else {
-      baseValue = generateDecimalWith3to4Digits();
+      combinedValue = generateDecimalWith3to4Digits();
     }
 
     const indexDiff = toIndex - fromIndex;
     const factor = Math.pow(10, indexDiff);
-    const precise = (baseValue * factor).toFixed(5);
-    const correctAnsNum = parseFloat(precise);
+    const preciseResult = (combinedValue * factor).toFixed(5);
+    const correctAnsNum = parseFloat(preciseResult);
 
     return {
-      question: `Convert ${baseValue} ${units[fromIndex]} to ${units[toIndex]}.`,
+      question: `Convert ${combinedValue} ${units[fromIndex]} to ${units[toIndex]}.`,
       answer: correctAnsNum
     };
   }
@@ -276,7 +272,7 @@ if (document.getElementById('uc-start-btn')) {
       endQuiz();
       return;
     }
-    let qObj = questions[currentQIndex];
+    const qObj = questions[currentQIndex];
     questionEl.textContent = qObj.question;
     answerInput.value = '';
   }
@@ -294,7 +290,7 @@ if (document.getElementById('uc-start-btn')) {
       feedbackEl.classList.remove('incorrect');
       feedbackEl.classList.add('correct');
     } else {
-      feedbackEl.textContent = `Incorrect! Correct answer was ${formatAnswer(correctAns)}.`;
+      feedbackEl.textContent = `Incorrect! The correct answer was ${formatAnswer(correctAns)}.`;
       feedbackEl.classList.remove('correct');
       feedbackEl.classList.add('incorrect');
     }
@@ -308,10 +304,10 @@ if (document.getElementById('uc-start-btn')) {
 
     quizArea.classList.add('hidden');
     resultArea.classList.remove('hidden');
-    summaryEl.textContent = `You answered ${correctCount} out of ${questions.length} correctly.`;
+    summaryEl.textContent = `You answered ${correctCount} out of ${currentQIndex} correctly.`;
 
-    const scoreInfo = `Score: ${correctCount}/${questions.length}`;
-    logPractice('Unit Conversions', `Count: ${totalQuestions}`, scoreInfo);
+    const scoreInfo = `Score: ${correctCount}/${currentQIndex}`;
+    logPractice('Unit Conversions', `Number of Questions: ${totalQuestions}`, scoreInfo);
   }
 
   function formatAnswer(num) {
@@ -321,6 +317,187 @@ if (document.getElementById('uc-start-btn')) {
 
   startBtn.addEventListener('click', startQuiz);
   submitBtn.addEventListener('click', checkAnswer);
+}
+
+/**************************************************
+ * 3) PRIME NUMBERS QUIZ LOGIC
+ **************************************************/
+if (document.getElementById('prime-start-btn')) {
+  const startBtn = document.getElementById('prime-start-btn');
+  const timeSelect = document.getElementById('prime-time-select');
+  const quizArea = document.getElementById('prime-quiz-area');
+  const setCountEl = document.getElementById('prime-set-count');
+  const numbersContainer = document.getElementById('prime-numbers');
+  const submitBtn = document.getElementById('prime-submit-btn');
+  const feedbackEl = document.getElementById('prime-feedback');
+  const resultArea = document.getElementById('prime-result-area');
+  const summaryEl = document.getElementById('prime-summary');
+  const startOptions = document.getElementById('prime-start-options');
+
+  let timeMode = '1';
+  let timer = null;
+  let quizCompleted = false;
+
+  let currentSetIndex = 0;
+  let totalSetsAttempted = 0;
+  let correctSets = 0;
+  let questions = []; // array of sets
+
+  function isPrime(num) {
+    if (num < 2) return false;
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+      if (num % i === 0) return false;
+    }
+    return true;
+  }
+
+  // Generate one set of 6 ascending unique numbers from 1..100 with at least one prime
+  function generateSetOfSix() {
+    let arr = [];
+    while (arr.length < 6) {
+      let r = Math.floor(Math.random() * 100) + 1; // 1..100
+      if (!arr.includes(r)) {
+        arr.push(r);
+      }
+    }
+    arr.sort((a,b) => a - b);
+
+    // Check if there's at least 1 prime
+    const hasPrime = arr.some(n => isPrime(n));
+    if (!hasPrime) {
+      // regenerate
+      return generateSetOfSix();
+    }
+    return arr;
+  }
+
+  function startQuiz() {
+    // Hide or disable the start UI
+    startBtn.disabled = true;
+    startOptions.classList.add('hidden');
+
+    // Get user selection
+    let selected = timeSelect.value;
+
+    if (selected === 'all') {
+      timeMode = 'all';
+    } else {
+      timeMode = selected; // '1', '3', '5'
+    }
+
+    currentSetIndex = 0;
+    totalSetsAttempted = 0;
+    correctSets = 0;
+    quizCompleted = false;
+    feedbackEl.textContent = '';
+    feedbackEl.classList.remove('correct', 'incorrect');
+
+    quizArea.classList.remove('hidden');
+    resultArea.classList.add('hidden');
+
+    if (timeMode !== 'all') {
+      const timeLimit = parseInt(timeMode, 10) * 60; 
+      let countdown = timeLimit;
+      timer = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+          endQuiz();
+        }
+      }, 1000);
+    }
+
+    loadNextSet();
+  }
+
+  function loadNextSet() {
+    if (quizCompleted) return;
+
+    const setOf6 = generateSetOfSix(); 
+    currentSetIndex++;
+
+    // Clear previous items
+    numbersContainer.innerHTML = '';
+    feedbackEl.textContent = '';
+    feedbackEl.classList.remove('correct', 'incorrect');
+    setCountEl.textContent = `Set #${currentSetIndex}`;
+
+    // For each number, create a clickable element
+    setOf6.forEach(num => {
+      const btn = document.createElement('button');
+      btn.classList.add('prime-select-btn');
+      btn.textContent = num;
+      btn.dataset.selected = 'false';
+
+      // Clicking toggles selection
+      btn.addEventListener('click', () => {
+        if (btn.dataset.selected === 'false') {
+          // Select it
+          btn.dataset.selected = 'true';
+          btn.classList.add('selected');
+        } else {
+          // Deselect it
+          btn.dataset.selected = 'false';
+          btn.classList.remove('selected');
+        }
+      });
+
+      numbersContainer.appendChild(btn);
+    });
+
+    totalSetsAttempted++;
+  }
+
+  function checkSet() {
+    if (quizCompleted) return;
+
+    // Read which numbers are selected
+    const btns = document.querySelectorAll('.prime-select-btn');
+    let allCorrect = true; // assume correct until proven otherwise
+    btns.forEach(btn => {
+      const num = parseInt(btn.textContent, 10);
+      const userSelected = (btn.dataset.selected === 'true');
+      const shouldBeSelected = isPrime(num);
+
+      // if userSelected != shouldBeSelected => error
+      if (userSelected !== shouldBeSelected) {
+        allCorrect = false;
+      }
+    });
+
+    if (allCorrect) {
+      correctSets++;
+      feedbackEl.textContent = 'Correct set!';
+      feedbackEl.classList.remove('incorrect');
+      feedbackEl.classList.add('correct');
+    } else {
+      feedbackEl.textContent = 'Incorrect selection! Please try the next set.';
+      feedbackEl.classList.remove('correct');
+      feedbackEl.classList.add('incorrect');
+    }
+
+    loadNextSet();
+  }
+
+  function endQuiz() {
+    if (quizCompleted) return;
+    quizCompleted = true;
+
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+    quizArea.classList.add('hidden');
+    resultArea.classList.remove('hidden');
+
+    summaryEl.textContent = `You got ${correctSets} correct sets out of ${totalSetsAttempted} attempts.`;
+
+    // Log practice
+    const scoreInfo = `Score: ${correctSets}/${totalSetsAttempted} sets`;
+    logPractice('Prime Numbers', `Time Mode: ${timeMode}`, scoreInfo);
+  }
+
+  startBtn.addEventListener('click', startQuiz);
+  submitBtn.addEventListener('click', checkSet);
 }
 
 /**************************************************
