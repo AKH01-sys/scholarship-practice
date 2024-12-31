@@ -111,10 +111,12 @@ if (document.getElementById('sc-start-btn')) {
     if (userAns === correctAns) {
       correctCount++;
       feedbackEl.textContent = 'Correct!';
-      feedbackEl.style.color = 'green';
+      feedbackEl.classList.remove('incorrect');
+      feedbackEl.classList.add('correct');
     } else {
       feedbackEl.textContent = `Incorrect! Correct answer was ${correctAns}.`;
-      feedbackEl.style.color = 'red';
+      feedbackEl.classList.remove('correct');
+      feedbackEl.classList.add('incorrect');
     }
     
     currentQIndex++;
@@ -164,7 +166,6 @@ if (document.getElementById('uc-start-btn')) {
   const feedbackEl = document.getElementById('uc-feedback');
   const resultArea = document.getElementById('uc-result-area');
   const summaryEl = document.getElementById('uc-summary');
-  const startOptions = document.getElementById('uc-start-options');
 
   const units = ["kilo", "hecto", "deca", "unit", "deci", "centi", "mili"];
 
@@ -276,10 +277,12 @@ if (document.getElementById('uc-start-btn')) {
     if (Math.abs(userAns - correctAns) < tolerance) {
       correctCount++;
       feedbackEl.textContent = 'Correct!';
-      feedbackEl.style.color = 'green';
+      feedbackEl.classList.remove('incorrect');
+      feedbackEl.classList.add('correct');
     } else {
       feedbackEl.textContent = `Incorrect! Correct answer was ${formatAnswer(correctAns)}.`;
-      feedbackEl.style.color = 'red';
+      feedbackEl.classList.remove('correct');
+      feedbackEl.classList.add('incorrect');
     }
     currentQIndex++;
     showQuestion();
