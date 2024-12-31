@@ -450,31 +450,32 @@ if (document.getElementById('prime-start-btn')) {
   function checkSet() {
     if (quizCompleted) return;
 
-    // Read which numbers are selected
     const btns = document.querySelectorAll('.prime-select-btn');
-    let allCorrect = true; // assume correct until proven otherwise
+    let allCorrect = true;
+    
     btns.forEach(btn => {
       const num = parseInt(btn.textContent, 10);
       const userSelected = (btn.dataset.selected === 'true');
       const shouldBeSelected = isPrime(num);
 
-      // if userSelected != shouldBeSelected => error
       if (userSelected !== shouldBeSelected) {
         allCorrect = false;
       }
     });
 
+    // Show feedback
     if (allCorrect) {
       correctSets++;
-      feedbackEl.textContent = 'Correct set!';
+      feedbackEl.textContent = 'Correct!';
       feedbackEl.classList.remove('incorrect');
       feedbackEl.classList.add('correct');
     } else {
-      feedbackEl.textContent = 'Incorrect selection! Please try the next set.';
+      feedbackEl.textContent = 'Incorrect!';
       feedbackEl.classList.remove('correct');
       feedbackEl.classList.add('incorrect');
     }
 
+    // Move on to next set
     loadNextSet();
   }
 
