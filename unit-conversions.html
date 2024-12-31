@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit Conversions</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Unit Conversions Practice</h1>
+    
+    <div class="option-group">
+      <label for="uc-question-count">Number of Questions:</label>
+      <select id="uc-question-count">
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+      </select>
+    </div>
+    
+    <button id="uc-start-btn" class="start-btn">Start</button>
+    
+    <!-- Quiz Area -->
+    <div id="uc-quiz-area" class="quiz-area hidden">
+      <div id="uc-question" class="question-text"></div>
+      <input type="text" id="uc-answer" placeholder="Type your answer"/>
+      <button id="uc-submit-btn">Submit</button>
+      <div id="uc-feedback" class="feedback"></div>
+    </div>
+    
+    <!-- End / Result Display -->
+    <div id="uc-result-area" class="result-area hidden">
+      <h2>Results</h2>
+      <p id="uc-summary"></p>
+      <button onclick="location.href='index.html'">Back to Main Menu</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
