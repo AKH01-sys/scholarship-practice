@@ -57,6 +57,21 @@ p {
   background: #d15353;
 }
 
+/* "Back" button style */
+.back-btn {
+  background: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  padding: 8px 12px;
+  margin-bottom: 15px;
+}
+.back-btn:hover {
+  background: #bbb;
+}
+
 /* Form/option group */
 .option-group {
   margin: 20px 0;
