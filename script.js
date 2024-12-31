@@ -149,7 +149,7 @@ if (document.getElementById('sc-start-btn')) {
     }
     quizArea.classList.add('hidden');
     resultArea.classList.remove('hidden');
-    summaryEl.textContent = `You answered ${correctCount} questions correctly out of ${currentQIndex}.`;
+    summaryEl.textContent = `You answered ${correctCount} out of ${currentQIndex} correctly.`;
 
     // Log the result
     const score = `Score: ${correctCount}/${currentQIndex}`;
