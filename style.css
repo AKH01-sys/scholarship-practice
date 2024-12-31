@@ -34,7 +34,7 @@ p {
 }
 
 /* Unified Buttons */
-.menu-btn, .start-btn, .nav-btn, #sc-submit-btn, #uc-submit-btn {
+.menu-btn, .start-btn, .nav-btn, #sc-submit-btn, #uc-submit-btn, .prime-select-btn {
   display: block;
   width: 100%;
   margin: 10px 0;
@@ -50,7 +50,7 @@ p {
 }
 
 .menu-btn:hover, .start-btn:hover, .nav-btn:hover, 
-#sc-submit-btn:hover, #uc-submit-btn:hover {
+#sc-submit-btn:hover, #uc-submit-btn:hover, .prime-select-btn:hover {
   background: #1F3B6E; /* Darker Blue on hover */
 }
 
@@ -61,6 +61,15 @@ p {
 
 .stats-btn:hover {
   background: #127566;
+}
+
+/* Clear Stats button with Red */
+.clear-stats-btn {
+  background: #E74C3C; /* Red */
+}
+
+.clear-stats-btn:hover {
+  background: #C0392B; /* Darker red on hover */
 }
 
 /* Option-group styling */
@@ -86,6 +95,7 @@ p {
   display: none;
 }
 
+/* Question Text Styling */
 .question-text {
   font-weight: bold;
   text-align: center;
@@ -119,6 +129,20 @@ p {
   border-radius: 5px;
 }
 
-/* Extra note: If you want accent color (#F39C12) for special highlights, 
-   you can apply it selectively (e.g., .accent-btn { background: #F39C12; } ).
- */
+/* Prime Numbers Selection Buttons */
+.prime-select-btn {
+  background: #16A085; /* Teal for selection */
+  margin: 5px 2px;
+}
+
+.prime-select-btn.selected {
+  background: #2F5597; /* Change to primary color when selected */
+}
+
+/* Prime Numbers Container */
+.prime-numbers-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 10px;
+}
