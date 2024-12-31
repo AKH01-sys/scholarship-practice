@@ -3,26 +3,31 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Practice Stats</title>
+  <title>Practice Stats - Scholarship Practice</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div class="container">
 
-    <!-- Back button (styled consistently) -->
     <button class="nav-btn" onclick="history.back()">← Back</button>
 
     <h1>Recent Practice Stats</h1>
 
+    <!-- Filter for stats -->
+    <div class="option-group">
+      <label for="stats-filter">Filter:</label>
+      <select id="stats-filter">
+        <option value="last5">Last 5</option>
+        <option value="all">All</option>
+        <option value="today">Today</option>
+        <option value="yesterday">Yesterday</option>
+        <option value="last30">Last 30 Days</option>
+      </select>
+    </div>
+
     <div id="stats-logs"></div>
 
-    <button class="nav-btn" onclick="clearStats()">
-      Clear Stats
-    </button>
-    <!-- Optional: Back to Main Menu button if desired -->
-    <!-- <button class="nav-btn" onclick="location.href='index.html'">
-      Back to Main Menu
-    </button> -->
+    <button class="nav-btn" onclick="clearStats()">Clear Stats</button>
   </div>
 
   <script src="script.js"></script>
