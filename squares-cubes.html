@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Squares &amp; Cubes</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Squares &amp; Cubes Practice</h1>
+    
+    <div class="option-group">
+      <label for="sc-time-select">Practice Time:</label>
+      <select id="sc-time-select">
+        <option value="1">1 minute</option>
+        <option value="2">2 minutes</option>
+        <option value="5">5 minutes</option>
+        <option value="all">Practice All</option>
+      </select>
+    </div>
+    
+    <button id="sc-start-btn" class="start-btn">Start</button>
+    
+    <!-- Quiz Area -->
+    <div id="sc-quiz-area" class="quiz-area hidden">
+      <div id="sc-question" class="question-text"></div>
+      <input type="text" id="sc-answer" placeholder="Type your answer"/>
+      <button id="sc-submit-btn">Submit</button>
+      <div id="sc-feedback" class="feedback"></div>
+    </div>
+    
+    <!-- End / Result Display -->
+    <div id="sc-result-area" class="result-area hidden">
+      <h2>Results</h2>
+      <p id="sc-summary"></p>
+      <button onclick="location.href='index.html'">Back to Main Menu</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
